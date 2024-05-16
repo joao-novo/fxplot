@@ -2,7 +2,6 @@ package parser
 
 import (
 	"slices"
-	"strings"
 )
 
 type Category int
@@ -35,7 +34,6 @@ func inArray(target string, arr []string) bool {
 }
 
 func categorizeInput(fn string) []Category {
-	fn = strings.ReplaceAll(fn, " ", "")
 	ops := []string{"+", "-", "*", "/", "^"}
 	length := len(fn)
 	res := make([]Category, length)
@@ -60,6 +58,6 @@ func convertToTree(operation string) OperationTree {
 	opIdx := slices.Index(category, OPERATION)
 	tree.op = operation[opIdx]
 	tree.arg1 = operation[:opIdx]
-	tree.arg2 = operation[opIdx:]
+	tree.arg2 = operation[opIdx+1:]
 	return tree
 }
