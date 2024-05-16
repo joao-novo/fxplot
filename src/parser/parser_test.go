@@ -63,6 +63,7 @@ func TestTreeConversion(t *testing.T) {
 			'+',
 			"2",
 			"3",
+			0,
 		}
 		AssertTreeConversion(t, tree, expected)
 	})
@@ -72,6 +73,17 @@ func TestTreeConversion(t *testing.T) {
 			'+',
 			"52",
 			"x",
+			0,
+		}
+		AssertTreeConversion(t, tree, expected)
+	})
+	t.Run("operation with parentheses", func(t *testing.T) {
+		tree := convertToTree("(42*x)")
+		expected := OperationTree{
+			'*',
+			"42",
+			"x",
+			3,
 		}
 		AssertTreeConversion(t, tree, expected)
 	})
@@ -96,8 +108,8 @@ func AssertCategory(t *testing.T, category, expected []Category) {
 func AssertTreeConversion(t *testing.T, tree, expected OperationTree) {
 	t.Helper()
 	if !reflect.DeepEqual(tree, expected) {
-		t.Logf("op: got %b expected %b\narg1: got %s expected %s\narg2: got %s expected %s",
-			tree.op, expected.op, tree.arg1, expected.arg1, tree.arg2, expected.arg2)
+		t.Logf("op: got %b expected %b\narg1: got %s expected %s\narg2: got %s expected %s\npriority: got %d expected %d",
+			tree.op, expected.op, tree.arg1, expected.arg1, tree.arg2, expected.arg2, tree.priority, expected.priority)
 		t.Error("wrong output")
 	}
 
