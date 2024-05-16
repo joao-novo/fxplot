@@ -2,6 +2,7 @@ package parser
 
 import (
 	"slices"
+	"strings"
 )
 
 type Category int
@@ -68,9 +69,12 @@ func convertToTree(operation string) OperationTree {
 	category := categorizeInput(operation)
 	opIdx := slices.Index(category, OPERATION) // finds the index with the operation sign
 	tree.op = operation[opIdx]
-	tree.arg1 = operation[:opIdx]
-	tree.arg2 = operation[opIdx+1:]
+	tree.arg1 = strings.Trim(operation[:opIdx], "(")
+	tree.arg2 = strings.Trim(operation[opIdx+1:], ")")
 	priorityVal := priority[string(tree.op)]
+	if operation[0] == '(' {
+		priorityVal = 3
+	}
 	tree.priority = priorityVal
 	return tree
 }
