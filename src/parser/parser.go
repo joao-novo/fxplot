@@ -1,6 +1,8 @@
 package parser
 
-import "strings"
+import (
+	"slices"
+)
 
 type Category int
 
@@ -10,6 +12,17 @@ const (
 	VARIABLE
 	PARENTHESIS
 )
+
+type OperationTree struct {
+	op   byte
+	arg1 string
+	arg2 string
+}
+
+type OperationNode struct {
+	item OperationTree
+	next *OperationNode
+}
 
 func inArray(target string, arr []string) bool {
 	for _, item := range arr {
@@ -21,7 +34,6 @@ func inArray(target string, arr []string) bool {
 }
 
 func categorizeInput(fn string) []Category {
-	fn = strings.ReplaceAll(fn, " ", "")
 	ops := []string{"+", "-", "*", "/", "^"}
 	length := len(fn)
 	res := make([]Category, length)
@@ -38,4 +50,14 @@ func categorizeInput(fn string) []Category {
 		}
 	}
 	return res
+}
+
+func convertToTree(operation string) OperationTree {
+	var tree OperationTree
+	category := categorizeInput(operation)
+	opIdx := slices.Index(category, OPERATION)
+	tree.op = operation[opIdx]
+	tree.arg1 = operation[:opIdx]
+	tree.arg2 = operation[opIdx+1:]
+	return tree
 }
