@@ -77,6 +77,16 @@ func TestTreeConversion(t *testing.T) {
 		}
 		AssertTreeConversion(t, tree, expected)
 	})
+	t.Run("operation with parentheses", func(t *testing.T) {
+		tree := convertToTree("(42*x)")
+		expected := OperationTree{
+			'*',
+			"42",
+			"x",
+			3,
+		}
+		AssertTreeConversion(t, tree, expected)
+	})
 }
 
 func AssertCategory(t *testing.T, category, expected []Category) {
