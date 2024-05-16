@@ -13,10 +13,20 @@ const (
 	PARENTHESIS
 )
 
+var priority map[string]int = map[string]int{
+	"(": 3,
+	"^": 2,
+	"*": 1,
+	"/": 1,
+	"+": 0,
+	"-": 0,
+}
+
 type OperationTree struct {
-	op   byte
-	arg1 string
-	arg2 string
+	op       byte
+	arg1     string
+	arg2     string
+	priority int
 }
 
 type OperationNode struct {
@@ -38,6 +48,7 @@ func categorizeInput(fn string) []Category {
 	length := len(fn)
 	res := make([]Category, length)
 	for i, char := range fn {
+		// iterates over the array to check for each kind of category and fills the result accordingly
 		if inArray(string(char), ops) {
 			res[i] = OPERATION
 		} else if 'a' <= char && char <= 'z' {
@@ -55,9 +66,11 @@ func categorizeInput(fn string) []Category {
 func convertToTree(operation string) OperationTree {
 	var tree OperationTree
 	category := categorizeInput(operation)
-	opIdx := slices.Index(category, OPERATION)
+	opIdx := slices.Index(category, OPERATION) // finds the index with the operation sign
 	tree.op = operation[opIdx]
 	tree.arg1 = operation[:opIdx]
 	tree.arg2 = operation[opIdx+1:]
+	priorityVal := priority[string(tree.op)]
+	tree.priority = priorityVal
 	return tree
 }
