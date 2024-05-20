@@ -50,14 +50,18 @@ func categorizeInput(fn string) []Category {
 	}
 	return res
 }
-func polynomialCoefficientExtraction(fn string) (map[rune]int, map[int64]int64) {
+
+// Extracts the coefficients and the signs of a polynomial function into a slice with signs and a map with the coefficients
+func polynomialCoefficientExtraction(fn string) ([]rune, map[int64]int64) {
 	splitFn := []string{}
 	coeffs := make(map[int64]int64)
-	signs := map[rune]int{'+': 0, '-': 0}
+	signs := []rune{}
+	i := 0
 	var exponent int64
 	for _, char := range fn {
 		if char == '+' || char == '-' {
-			signs[char]++
+			signs[i] = char
+			i++
 		}
 	}
 	fn = strings.ReplaceAll(fn, "-", "+")
