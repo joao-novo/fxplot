@@ -1,9 +1,16 @@
+// Package that parses mathematical functions and converts them into a function
+// Currently working on supporting polynomials
 package parser
 
-import "strings"
+import (
+	"reflect"
+	"strconv"
+	"strings"
+)
 
 type Category int
 
+// Each of the characters in the input can be of any of these types
 const (
 	NUM = iota
 	OPERATION
@@ -11,15 +18,19 @@ const (
 	PARENTHESIS
 )
 
-func inArray(target string, arr []string) bool {
+// Reports whether a string is in an array
+// May be extended to support other types in the future
+func inArray[T any](target T, arr []T) bool {
 	for _, item := range arr {
-		if target == item {
+		if reflect.DeepEqual(item, target) {
 			return true
 		}
 	}
 	return false
 }
 
+// Takes the user's input function and creates an array with the category of each of the characters
+// Currently not being used but may be useful in the future
 func categorizeInput(fn string) []Category {
 	fn = strings.ReplaceAll(fn, " ", "")
 	ops := []string{"+", "-", "*", "/", "^"}
@@ -38,4 +49,38 @@ func categorizeInput(fn string) []Category {
 		}
 	}
 	return res
+}
+
+func polynomialCoefficientExtraction(fn string) (map[rune]int, map[int64]int64) {
+	splitFn := []string{}
+	coeffs := make(map[int64]int64)
+	signs := map[rune]int{'+': 0, '-': 0}
+	var exponent int64
+	for _, char := range fn {
+		if char == '+' || char == '-' {
+			signs[char]++
+		}
+	}
+	fn = strings.ReplaceAll(fn, "-", "+")
+	splitFn = strings.Split(fn, "+")
+
+	for _, monomial := range splitFn {
+		category := categorizeInput(monomial)
+		if !inArray(VARIABLE, category) {
+			coeff, _ := strconv.ParseInt(monomial, 10, 64)
+			exponent = 0
+			coeffs[coeff] = exponent
+		} else if !inArray(OPERATION, category) {
+			i := strings.Index(monomial, "x")
+			coeff, _ := strconv.ParseInt(monomial[:i], 10, 64)
+			exponent = 1
+			coeffs[coeff] = exponent
+		} else {
+			tempSplit := strings.Split(monomial, "x^")
+			coeff, _ := strconv.ParseInt(tempSplit[0], 10, 64)
+			exponent, _ := strconv.ParseInt(tempSplit[1], 10, 64)
+			coeffs[coeff] = exponent
+		}
+	}
+	return signs, coeffs
 }
