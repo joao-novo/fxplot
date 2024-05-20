@@ -55,13 +55,11 @@ func categorizeInput(fn string) []Category {
 func polynomialCoefficientExtraction(fn string) ([]rune, map[int64]int64) {
 	splitFn := []string{}
 	coeffs := make(map[int64]int64)
-	signs := []rune{}
-	i := 0
+	var signs []rune
 	var exponent int64
 	for _, char := range fn {
 		if char == '+' || char == '-' {
-			signs[i] = char
-			i++
+			signs = append(signs, char)
 		}
 	}
 	fn = strings.ReplaceAll(fn, "-", "+")

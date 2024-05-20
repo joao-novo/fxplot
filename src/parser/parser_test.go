@@ -61,7 +61,7 @@ func TestPolynomials(t *testing.T) {
 	t.Run("basic case", func(t *testing.T) {
 		fn := "3x^2+5x^4"
 		signs, coeffs := polynomialCoefficientExtraction(fn)
-		expected1, expected2 := map[int]int{5: 4, 3: 2}, map[rune]int{'+': 1, '-': 0}
+		expected1, expected2 := map[int]int{5: 4, 3: 2}, []rune{'+'}
 		if fmt.Sprint(coeffs) != fmt.Sprint(expected1) || fmt.Sprint(signs) != fmt.Sprint(expected2) {
 			t.Errorf("wrong output")
 		}
@@ -69,7 +69,7 @@ func TestPolynomials(t *testing.T) {
 	t.Run("degree one", func(t *testing.T) {
 		fn := "3x^2+5x"
 		signs, coeffs := polynomialCoefficientExtraction(fn)
-		expected1, expected2 := map[int]int{3: 2, 5: 1}, map[rune]int{'+': 1, '-': 0}
+		expected1, expected2 := map[int]int{3: 2, 5: 1}, []rune{'+'}
 		if fmt.Sprint(coeffs) != fmt.Sprint(expected1) || fmt.Sprint(signs) != fmt.Sprint(expected2) {
 			t.Errorf("wrong output")
 		}
@@ -77,7 +77,7 @@ func TestPolynomials(t *testing.T) {
 	t.Run("degree zero", func(t *testing.T) {
 		fn := "3x^2+5"
 		signs, coeffs := polynomialCoefficientExtraction(fn)
-		expected1, expected2 := map[int]int{3: 2, 5: 0}, map[rune]int{'+': 1, '-': 0}
+		expected1, expected2 := map[int]int{3: 2, 5: 0}, []rune{'+'}
 		if fmt.Sprint(coeffs) != fmt.Sprint(expected1) || fmt.Sprint(signs) != fmt.Sprint(expected2) {
 			t.Errorf("wrong output")
 		}
