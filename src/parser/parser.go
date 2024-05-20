@@ -2,20 +2,11 @@
 // Currently working on supporting polynomials
 package parser
 
-<<<<<<< HEAD
 import (
 	"reflect"
 	"strconv"
 	"strings"
 )
-||||||| 09cd4b6
-import "strings"
-=======
-import (
-	"slices"
-	"strings"
-)
->>>>>>> refs/remotes/origin/master
 
 type Category int
 
@@ -27,36 +18,9 @@ const (
 	PARENTHESIS
 )
 
-<<<<<<< HEAD
 // Reports whether a string is in an array
 // May be extended to support other types in the future
 func inArray[T any](target T, arr []T) bool {
-||||||| 09cd4b6
-func inArray(target string, arr []string) bool {
-=======
-var priority map[string]int = map[string]int{
-	"(": 3,
-	"^": 2,
-	"*": 1,
-	"/": 1,
-	"+": 0,
-	"-": 0,
-}
-
-type OperationTree struct {
-	op       byte
-	arg1     string
-	arg2     string
-	priority int
-}
-
-type OperationNode struct {
-	item OperationTree
-	next *OperationNode
-}
-
-func inArray(target string, arr []string) bool {
->>>>>>> refs/remotes/origin/master
 	for _, item := range arr {
 		if reflect.DeepEqual(item, target) {
 			return true
@@ -86,8 +50,6 @@ func categorizeInput(fn string) []Category {
 	}
 	return res
 }
-<<<<<<< HEAD
-
 func polynomialCoefficientExtraction(fn string) (map[rune]int, map[int64]int64) {
 	splitFn := []string{}
 	coeffs := make(map[int64]int64)
@@ -121,21 +83,3 @@ func polynomialCoefficientExtraction(fn string) (map[rune]int, map[int64]int64) 
 	}
 	return signs, coeffs
 }
-||||||| 09cd4b6
-=======
-
-func convertToTree(operation string) OperationTree {
-	var tree OperationTree
-	category := categorizeInput(operation)
-	opIdx := slices.Index(category, OPERATION) // finds the index with the operation sign
-	tree.op = operation[opIdx]
-	tree.arg1 = strings.Trim(operation[:opIdx], "(")
-	tree.arg2 = strings.Trim(operation[opIdx+1:], ")")
-	priorityVal := priority[string(tree.op)]
-	if operation[0] == '(' {
-		priorityVal = 3
-	}
-	tree.priority = priorityVal
-	return tree
-}
->>>>>>> refs/remotes/origin/master
