@@ -1,14 +1,20 @@
 // Package that parses mathematical functions and converts them into a function
 // Currently working on supporting polynomials
-package parser
+package main
 
 import (
+	"math"
 	"reflect"
 	"strconv"
 	"strings"
 )
 
 type Category int
+
+type Monomial struct {
+	coeff    int64
+	exponent int64
+}
 
 // Each of the characters in the input can be of any of these types
 const (
@@ -52,10 +58,10 @@ func categorizeInput(fn string) []Category {
 }
 
 // Extracts the coefficients and the signs of a polynomial function into a slice with signs and a map with the coefficients
-func polynomialCoefficientExtraction(fn string) ([]rune, map[int64]int64) {
+func polynomialCoefficientExtraction(fn string) ([]rune, []Monomial) {
 	splitFn := []string{}
-	coeffs := make(map[int64]int64)
-	var signs []rune
+	var coeffs []Monomial
+	signs := []rune{'+'}
 	var exponent int64
 	for _, char := range fn {
 		if char == '+' || char == '-' {
@@ -70,18 +76,44 @@ func polynomialCoefficientExtraction(fn string) ([]rune, map[int64]int64) {
 		if !inArray(VARIABLE, category) {
 			coeff, _ := strconv.ParseInt(monomial, 10, 64)
 			exponent = 0
-			coeffs[coeff] = exponent
+			var mono Monomial
+			mono.coeff = coeff
+			mono.exponent = exponent
+			coeffs = append(coeffs, mono)
 		} else if !inArray(OPERATION, category) {
 			i := strings.Index(monomial, "x")
 			coeff, _ := strconv.ParseInt(monomial[:i], 10, 64)
 			exponent = 1
-			coeffs[coeff] = exponent
+			var mono Monomial
+			mono.coeff = coeff
+			mono.exponent = exponent
+			coeffs = append(coeffs, mono)
 		} else {
 			tempSplit := strings.Split(monomial, "x^")
 			coeff, _ := strconv.ParseInt(tempSplit[0], 10, 64)
 			exponent, _ := strconv.ParseInt(tempSplit[1], 10, 64)
-			coeffs[coeff] = exponent
+			var mono Monomial
+			mono.coeff = coeff
+			mono.exponent = exponent
+			coeffs = append(coeffs, mono)
 		}
 	}
 	return signs, coeffs
 }
+
+// Resulting function from the coefficients and the signs
+func createFunc(coeffs []Monomial, signs []rune) func(float32) float32 {
+	return func(x float32) float32 {
+		var result float32
+		for i, _ := range coeffs {
+			if signs[i] == '+' {
+				result += float32((coeffs[i].coeff * int64(math.Pow(float64(x), float64(coeffs[i].exponent)))))
+			} else {
+				result -= float32((coeffs[i].coeff * int64(math.Pow(float64(x), float64(coeffs[i].exponent)))))
+			}
+		}
+		return result
+	}
+}
+
+func main() {}
