@@ -102,14 +102,14 @@ func polynomialCoefficientExtraction(fn string) ([]rune, []Monomial) {
 }
 
 // Resulting function from the coefficients and the signs
-func createFunc(coeffs []Monomial, signs []rune) func(float32) float32 {
-	return func(x float32) float32 {
-		var result float32
-		for i, _ := range coeffs {
+func createFunc(coeffs []Monomial, signs []rune) func(float64) float64 {
+	return func(x float64) float64 {
+		var result float64
+		for i, c := range coeffs {
 			if signs[i] == '+' {
-				result += float32((coeffs[i].coeff * int64(math.Pow(float64(x), float64(coeffs[i].exponent)))))
+				result += float64((c.coeff * int64(math.Pow(float64(x), float64(c.exponent)))))
 			} else {
-				result -= float32((coeffs[i].coeff * int64(math.Pow(float64(x), float64(coeffs[i].exponent)))))
+				result -= float64((c.coeff * int64(math.Pow(float64(x), float64(c.exponent)))))
 			}
 		}
 		return result
