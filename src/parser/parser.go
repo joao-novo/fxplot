@@ -1,5 +1,5 @@
 // Package that parses mathematical functions and converts them into a function
-// Currently working on supporting polynomials
+// Currently supports polynomials
 package main
 
 import (
@@ -24,8 +24,8 @@ const (
 	PARENTHESIS
 )
 
-// Reports whether a string is in an array
-// May be extended to support other types in the future
+// Reports whether a value is in an array of that type
+// Works for any type
 func inArray[T any](target T, arr []T) bool {
 	for _, item := range arr {
 		if reflect.DeepEqual(item, target) {
@@ -36,7 +36,6 @@ func inArray[T any](target T, arr []T) bool {
 }
 
 // Takes the user's input function and creates an array with the category of each of the characters
-// Currently not being used but may be useful in the future
 func categorizeInput(fn string) []Category {
 	ops := []string{"+", "-", "*", "/", "^"}
 	length := len(fn)
@@ -107,7 +106,7 @@ func polynomialCoefficientExtraction(fn string) ([]rune, []Monomial) {
 	return signs, coeffs
 }
 
-// Resulting function from the coefficients and the signs
+// Creates the resulting function from the coefficients and the signs
 func createFunc(coeffs []Monomial, signs []rune) func(float64) float64 {
 	return func(x float64) float64 {
 		var result float64
