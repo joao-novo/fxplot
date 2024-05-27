@@ -75,6 +75,18 @@ func TestPolynomials(t *testing.T) {
 		expected1, expected2 := []Monomial{{3, 2}, {5, 0}}, []rune{'+', '+'}
 		AssertPolynomials(t, signs, expected2, coeffs, expected1)
 	})
+	t.Run("minus signs", func(t *testing.T) {
+		fn := "-4x^4-5x^2-1"
+		signs, coeffs := polynomialCoefficientExtraction(fn)
+		expected1, expected2 := []Monomial{{4, 4}, {5, 2}, {1, 0}}, []rune{'-', '-', '-'}
+		for _, a := range signs {
+			t.Log(a)
+		}
+		for _, a := range coeffs {
+			t.Log(a)
+		}
+		AssertPolynomials(t, signs, expected2, coeffs, expected1)
+	})
 }
 
 func TestFunctions(t *testing.T) {
