@@ -79,12 +79,12 @@ func TestPolynomials(t *testing.T) {
 		fn := "-4x^4-5x^2-1"
 		signs, coeffs := polynomialCoefficientExtraction(fn)
 		expected1, expected2 := []Monomial{{4, 4}, {5, 2}, {1, 0}}, []rune{'-', '-', '-'}
-		for _, a := range signs {
-			t.Log(a)
-		}
-		for _, a := range coeffs {
-			t.Log(a)
-		}
+		AssertPolynomials(t, signs, expected2, coeffs, expected1)
+	})
+	t.Run("stress test", func(t *testing.T) {
+		fn := "-5+3x-74x^2+5x^3+10x^12"
+		signs, coeffs := polynomialCoefficientExtraction(fn)
+		expected1, expected2 := []Monomial{{5, 0}, {3, 1}, {74, 2}, {5, 3}, {10, 12}}, []rune{'-', '+', '-', '+', '+'}
 		AssertPolynomials(t, signs, expected2, coeffs, expected1)
 	})
 }
@@ -106,6 +106,16 @@ func TestFunctions(t *testing.T) {
 		poly := createFunc(coeffs, signs)
 		expected := -9.0
 		got := poly(1)
+		if expected != got {
+			t.Errorf("got %f expected %f", got, expected)
+		}
+	})
+	t.Run("stress test", func(t *testing.T) {
+		fn := "-3x^2-6x^3+7x^4+52x^10-0x^3+5x^7-2x^15"
+		signs, coeffs := polynomialCoefficientExtraction(fn)
+		poly := createFunc(coeffs, signs)
+		expected := -11596.0
+		got := poly(2)
 		if expected != got {
 			t.Errorf("got %f expected %f", got, expected)
 		}
