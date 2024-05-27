@@ -3,17 +3,21 @@
 package main
 
 import (
-	"math"
+	"C"
 	"reflect"
 	"strconv"
 	"strings"
+)
+import (
+	"encoding/json"
+	"net/http"
 )
 
 type Category int
 
 type Monomial struct {
-	coeff    int64
-	exponent int64
+	coeff    int64 `json:"coeff"`
+	exponent int64 `json:"exponent"`
 }
 
 // Each of the characters in the input can be of any of these types
@@ -57,6 +61,8 @@ func categorizeInput(fn string) []Category {
 }
 
 // Extracts the coefficients and the signs of a polynomial function into a slice with signs and a map with the coefficients
+//
+//export polynomialCoefficientExtraction
 func polynomialCoefficientExtraction(fn string) ([]rune, []Monomial) {
 	splitFn := []string{}
 	var coeffs []Monomial
@@ -106,19 +112,28 @@ func polynomialCoefficientExtraction(fn string) ([]rune, []Monomial) {
 	return signs, coeffs
 }
 
-// Creates the resulting function from the coefficients and the signs
-func createFunc(coeffs []Monomial, signs []rune) func(float64) float64 {
-	return func(x float64) float64 {
-		var result float64
-		for i, c := range coeffs {
-			if signs[i] == '+' {
-				result += float64((c.coeff * int64(math.Pow(float64(x), float64(c.exponent)))))
-			} else {
-				result -= float64((c.coeff * int64(math.Pow(float64(x), float64(c.exponent)))))
-			}
-		}
-		return result
+// Handles json requests to send the values to a web API, to be used for plotting
+func handler(w http.ResponseWriter, r *http.Request) {
+	// Grabs input
+	r.ParseForm()
+	expression := r.Form.Get("function")
+
+	// Obtains the coefficients and signs, converts it into json
+	signs, coeffs := polynomialCoefficientExtraction(expression)
+	coeff_list := [][]int64{}
+	for _, monomial := range coeffs {
+		coeff_list = append(coeff_list, []int64{monomial.coeff, monomial.exponent})
 	}
+	responseData := map[string]interface{}{
+		"coeffs": coeff_list,
+		"signs":  signs,
+	}
+
+	// Sends the response
+	json.NewEncoder(w).Encode(responseData)
 }
 
-func main() {}
+func main() {
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
+}
