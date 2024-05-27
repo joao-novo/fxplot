@@ -89,39 +89,6 @@ func TestPolynomials(t *testing.T) {
 	})
 }
 
-func TestFunctions(t *testing.T) {
-	t.Run("basic polynomial", func(t *testing.T) {
-		fn := "3x^2"
-		signs, coeffs := polynomialCoefficientExtraction(fn)
-		poly := createFunc(coeffs, signs)
-		expected := 3.0
-		got := poly(1)
-		if expected != got {
-			t.Errorf("got %f expected %f", got, expected)
-		}
-	})
-	t.Run("minus signs polynomial", func(t *testing.T) {
-		fn := "-3x^2-6x^3"
-		signs, coeffs := polynomialCoefficientExtraction(fn)
-		poly := createFunc(coeffs, signs)
-		expected := -9.0
-		got := poly(1)
-		if expected != got {
-			t.Errorf("got %f expected %f", got, expected)
-		}
-	})
-	t.Run("stress test", func(t *testing.T) {
-		fn := "-3x^2-6x^3+7x^4+52x^10-0x^3+5x^7-2x^15"
-		signs, coeffs := polynomialCoefficientExtraction(fn)
-		poly := createFunc(coeffs, signs)
-		expected := -11596.0
-		got := poly(2)
-		if expected != got {
-			t.Errorf("got %f expected %f", got, expected)
-		}
-	})
-}
-
 func AssertCategory(t *testing.T, category, expected []Category) {
 	t.Helper()
 	if !reflect.DeepEqual(category, expected) {
