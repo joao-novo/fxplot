@@ -61,18 +61,24 @@ func categorizeInput(fn string) []Category {
 func polynomialCoefficientExtraction(fn string) ([]rune, []Monomial) {
 	splitFn := []string{}
 	var coeffs []Monomial
-	signs := []rune{'+'}
+	signs := []rune{}
 	var exponent int64
 	for _, char := range fn {
 		if char == '+' || char == '-' {
 			signs = append(signs, char)
 		}
 	}
+	if fn[0] != '-' {
+		signs = append(signs, '+')
+	}
 	fn = strings.ReplaceAll(fn, "-", "+")
 	splitFn = strings.Split(fn, "+")
 
 	for _, monomial := range splitFn {
 		category := categorizeInput(monomial)
+		if monomial == "" {
+			continue
+		}
 		if !inArray(VARIABLE, category) {
 			coeff, _ := strconv.ParseInt(monomial, 10, 64)
 			exponent = 0
